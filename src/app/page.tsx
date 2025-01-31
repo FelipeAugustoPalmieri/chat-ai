@@ -1,3 +1,9 @@
+import Chat from "@/components/Chat";
+
 export default function Home() {
-  return <h1>CHAT AI</h1>;
+  return (
+    <div className="flex min-h-screen bg-slate-50 items-center justify-center">
+      <Chat />
+    </div>
+  );
 }
