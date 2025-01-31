@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,23 +16,31 @@ import { useChat } from "ai/react";
 import { ScrollArea } from "./ui/scroll-area";
 
 const Chat = () => {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, stop } =
-    useChat({
-      api: "/api/chat",
-    });
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
+    api: "/api/chat",
+  });
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll para o final quando novas mensagens chegam
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
     <Card className="w-[440px]">
       <CardHeader>
-        <CardTitle>Chat AI</CardTitle>
-        <CardDescription>
-          Using Vercel SDK to create a chat bot.
-        </CardDescription>
+        <CardTitle>Support DataCrazy</CardTitle>
+        <CardDescription>Crazy responde tudo oque você precisa</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-[640px] w-full pr-4">
-          {messages.map((message) => {
-            return (
+      <CardContent className="relative h-[400px]">
+        <ScrollArea className="h-full w-full pr-4" ref={scrollRef}>
+          {messages.length === 0 ? (
+            <div className="text-center text-gray-500">Nenhuma mensagem</div>
+          ) : (
+            messages.map((message) => (
               <div
                 key={message.id}
                 className="flex gap-3 text-slate-600 text-sm mb-4"
@@ -56,14 +64,14 @@ const Chat = () => {
                   {message.content}
                 </p>
               </div>
-            );
-          })}
+            ))
+          )}
         </ScrollArea>
       </CardContent>
       <CardFooter>
         <form className="w-full flex gap-2" onSubmit={handleSubmit}>
           <Input
-            placeholder="How can I help you ?"
+            placeholder="How can I help you?"
             value={input}
             onChange={handleInputChange}
           />
